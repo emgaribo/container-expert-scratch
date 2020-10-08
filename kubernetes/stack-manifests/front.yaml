@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: front
+spec:
+  replicas: 8
+  selector:
+    matchLabels:
+      name: front
+  template:
+    metadata:
+      labels:
+        name: front
+    spec:
+      containers:
+      - name: front
+        image: kontinu/python-expert:v1.0
+        ports:
+        - name: web
+          containerPort: 8080
+          protocol: TCP
+        env:
+        - name: NEXT_URL
+          value: "http://middle/api"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 3
+        resources: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: front
+spec:
+  selector:
+    name: front
+  type: LoadBalancer
+  ports:
+  - name: web
+    port: 80
+    targetPort: 8080

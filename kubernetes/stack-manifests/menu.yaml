@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: menu
+  labels:
+    name: menu
+spec:
+  selector:
+    matchLabels:
+      name: menu
+  template:
+    metadata:
+      labels:
+        name: menu
+    spec:
+      containers:
+      - name: menu
+        image: kontinu/nginx-menu:v1.0
+        ports:
+        - name: menu
+          containerPort: 80
+        env:
+        - name: FOO
+          value: bar
+        resources:  {}
+              
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: menu
+spec:
+  selector:
+    name: menu
+  type: NodePort
+  ports:
+  - name: http
+    nodePort: 31790
+    port: 80
+    targetPort: 80
