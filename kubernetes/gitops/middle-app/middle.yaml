@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: middle
+spec:
+  selector:
+    matchLabels:
+      name: middle
+  template:
+    metadata:
+      labels:
+        name: middle
+    spec:
+      containers:
+      - name: middle
+        image: kontinu/nodejs-expert:v1.0
+        ports:
+        - name: http
+          containerPort: 8080
+          protocol: TCP
+        env:
+        - name: NEXT_URL
+          value: "http://back/api"
+        resources: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: middle
+spec:
+  selector:
+    name: middle
+  type: ClusterIP
+  ports:
+  - name: middle
+    port: 80
+    targetPort: 8080
